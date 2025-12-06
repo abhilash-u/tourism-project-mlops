@@ -15,9 +15,6 @@ import os
 from huggingface_hub import login, HfApi, create_repo
 from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 import mlflow
-import sys
-from google.colab import userdata
-
 
 TRACKING_URI  = os.environ.get("MLFLOW_TRACKING_URI", "file:mlruns")
 
@@ -26,11 +23,9 @@ TRACKING_URI  = os.environ.get("MLFLOW_TRACKING_URI", "file:mlruns")
 # we could have pushed the training experiment data. 
 # So the idea here is to store the training experiment data on github.workspace/mlops directory and
 # then upload it to git repo.
+# MLFLOW_TRACKING_URI is a environment variable created in github actions yml file with value as file:${{ github.workspace }}/mlruns
 
-if 'google.colab' in sys.modules:
-  mlflow.set_tracking_uri("http://localhost:5000")
-else:
-  mlflow.set_tracking_uri(TRACKING_URI)
+mlflow.set_tracking_uri(TRACKING_URI)
 
 mlflow.set_experiment("tourism_project_MLOps_experiment")
 
