@@ -15,11 +15,32 @@ import os
 from huggingface_hub import login, HfApi, create_repo
 from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 import mlflow
+import sys
+from google.colab import userdata
 
-mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_experiment("travel-project-training-experiment-prd")
 
-api = HfApi(token=os.getenv("HF_TOKEN"))
+TRACKING_URI  = os.environ.get("MLFLOW_TRACKING_URI", "file:mlruns")
+
+#Since the github runtime is emphemeral. Thus it is not possible to push the training experiment
+# data to mlflow cloud server. It can be done if there is persistent server available and then
+# we could have pushed the training experiment data. 
+# So the idea here is to store the training experiment data on github.workspace/mlops directory and
+# then upload it to git repo.
+
+if 'google.colab' in sys.modules:
+  mlflow.set_tracking_uri("http://localhost:5000")
+else:
+  mlflow.set_tracking_uri(TRACKING_URI)
+
+mlflow.set_experiment("tourism_project_MLOps_experiment")
+
+# if colab environment use userdata secret else use os.getenv environment variable
+if 'google.colab' in sys.modules:
+    hf_token = userdata.get('HF_TOKEN')
+else:
+    hf_token = os.getenv("HF_TOKEN")
+
+api = HfApi(token=hf_token)
 
 
 Xtrain_path = "hf://datasets/Abhilashu/tourism-project/Xtrain.csv"
@@ -79,6 +100,7 @@ with mlflow.start_run():
     grid_search.fit(Xtrain, ytrain)
 
     # Log all parameter combinations and their mean test scores
+    # Removed the logging due to MLFlow's rate limit.
     results = grid_search.cv_results_
     for i in range(len(results['params'])):
         param_set = results['params'][i]
@@ -87,7 +109,7 @@ with mlflow.start_run():
 
     # Log best parameters and metrics
     mlflow.log_params(grid_search.best_params_)
-    mlflow.log_metric("best_mean_test_score", grid_search.best_score_)  
+    mlflow.log_metric("best_mean_test_score", grid_search.best_score_)
 
     # Store and evaluate the best model
     best_model = grid_search.best_estimator_
@@ -136,7 +158,7 @@ with mlflow.start_run():
         create_repo(repo_id=repo_id, repo_type=repo_type, private=False)
         print(f"Space '{repo_id}' created.")
 
-    
+
     api.upload_file(
         path_or_fileobj="best_tourism_model_v1.joblib",
         path_in_repo="best_tourism_model_v1.joblib",

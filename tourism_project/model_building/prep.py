@@ -19,7 +19,7 @@ print("Dataset loaded successfully from HF.")
 # create a copy of dataset for preprocessing
 df = tourism_dataset.copy()
 
-# --- DATA CLEANING AND PREPROCESSING BEGIN --- #
+# -------------------- DATA CLEANING AND PREPROCESSING BEGIN ------------------ #
 
 #Step 1:
 #Drop unnamed column and CustomerID column
@@ -48,7 +48,7 @@ for c in num_cols:
 
 
 # Step 4:
-#Similarly, Let us handle our target variable to be only 0/1
+#Similarly, Let us handle our target variable to be only int 0/1
 df["ProdTaken"] = df["ProdTaken"].fillna(0).astype(int)
 
 
@@ -90,7 +90,7 @@ for c in cat_cols:
   if df[c].isna().any():
     df[c] = df[c].fillna(df[c].mode().iloc[0])
 
-#--- DATA CLEANING & PREPROCESSING END --- #
+#---------------- DATA CLEANING & PREPROCESSING END ------------------ #
 
 
 # Define the target variable for the classification task
@@ -108,7 +108,7 @@ categorical_features = [
         "TypeofContact","Occupation","Gender","MaritalStatus","Designation","ProductPitched"
     ]
 
-# Define predictor matrix (X) using selected numeric and categorical features
+# Define predictor dataframe (X) using selected numeric and categorical features
 X = df[numeric_features + categorical_features]
 
 # Define target variable

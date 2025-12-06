@@ -53,7 +53,7 @@ if submitted:
         "Age": float(Age),
         "CityTier": float(CityTier),
         "DurationOfPitch": float(DurationOfPitch),
-        "TypeofContact": str(TypeofContact).strip(),  
+        "TypeofContact": str(TypeofContact).strip(),
         "Occupation": str(Occupation).strip(),
         "Gender": str(Gender).strip(),
         "NumberOfPersonVisiting": float(NumberOfPersonVisiting),
