@@ -1,2 +1,2 @@
 # MLOps
-MLOps pipeline for a travel company's product purchase model
+MLOps pipeline for a travel company's product purchase model.
