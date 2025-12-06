@@ -34,13 +34,7 @@ else:
 
 mlflow.set_experiment("tourism_project_MLOps_experiment")
 
-# if colab environment use userdata secret else use os.getenv environment variable
-if 'google.colab' in sys.modules:
-    hf_token = userdata.get('HF_TOKEN')
-else:
-    hf_token = os.getenv("HF_TOKEN")
-
-api = HfApi(token=hf_token)
+api = HfApi(token=os.getenv("HF_TOKEN"))
 
 
 Xtrain_path = "hf://datasets/Abhilashu/tourism-project/Xtrain.csv"
